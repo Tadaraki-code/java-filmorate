@@ -61,6 +61,9 @@ public class UserController {
             log.info("Обновляем данные пользователя{}", oldUser);
             if (!user.getLogin().contains(" ")) {
                 oldUser.setLogin(user.getLogin());
+            } else {
+                throw new ValidationException("Ошибка при обновлении пользователя:Логин содержит пробелы: " +
+                        user.getLogin());
             }
             if (user.getName() != null) {
                 oldUser.setName(user.getName());
