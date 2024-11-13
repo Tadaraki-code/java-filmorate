@@ -10,10 +10,12 @@ import lombok.Data;
 import ru.yandex.practicum.filmorate.validation.LocalDateValidator;
 
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 
 @Data
 @AllArgsConstructor
-public class Film implements DataModel {
+public class Film implements DataModel,Comparable<Film> {
     private Long id;
     @NotEmpty(message = "Название фильма не может быть пустым!")
     private String name;
@@ -26,4 +28,15 @@ public class Film implements DataModel {
     @NotNull
     @Positive(message = "Продолжительность фильма не может быть отрицательным числом!")
     private Long duration;
+    private final Set<Long> likes = new HashSet<>();
+
+    @Override
+    public int compareTo(Film o) {
+        int likeComparison = Integer.compare(o.getLikes().size(), this.likes.size());
+        if (likeComparison != 0) {
+            return likeComparison;
+        }
+        return Long.compare(this.getId(), o.getId());
+    }
+
 }

@@ -51,4 +51,11 @@ public class ErrorHandler {
         log.info("Переданный объект уже существует{}", e.getMessage());
         return e.getMessage();
     }
+
+    @ExceptionHandler(Throwable.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public String handlerNotFoundException(Throwable e) {
+        log.info("Случилось непредвиденое{}", e.getMessage());
+        return "Произошла ошибка на сервере,приносим свои извинения!";
+    }
 }
