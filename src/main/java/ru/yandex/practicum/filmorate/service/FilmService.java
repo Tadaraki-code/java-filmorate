@@ -10,9 +10,9 @@ import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 
-import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
-import java.util.TreeSet;
+import java.util.stream.Collectors;
 
 @Service
 @Getter
@@ -20,6 +20,26 @@ import java.util.TreeSet;
 public class FilmService {
     private final FilmStorage filmStorage;
     private final UserStorage userStorage;
+
+    public Collection<Film> getAllFilms() {
+        return filmStorage.getAllFilms();
+    }
+
+    public Film addFilm(Film film) {
+        return filmStorage.addFilm(film);
+    }
+
+    public Film updateFilm(Film film) {
+        return filmStorage.updateFilm(film);
+    }
+
+    public void deleteFilm(Film film) {
+        filmStorage.deleteFilm(film);
+    }
+
+    public Film getFilm(Long id) {
+        return filmStorage.getFilm(id);
+    }
 
     public void addLike(Long userId, Long filmId) {
         Film film = filmStorage.getFilm(filmId);
@@ -43,18 +63,14 @@ public class FilmService {
     }
 
     public List<Film> getFilmsWithBiggestUsersLikes(int count) {
-        TreeSet<Film> allFilms = new TreeSet<>(filmStorage.getAllFilms());
-        List<Film> filmsRate = new ArrayList<>();
-        if (count == 0 || count < 0) {
-            throw new ValidationException("Невозможно сформировать рейтинг по лайкам, " +
-                    "переданое значение являеться нулём.");
+        if (count <= 0) {
+            throw new ValidationException("Значение count должно быть больше нуля.");
         }
-        for (Film f : allFilms) {
-            if (filmsRate.size() < count) {
-                filmsRate.add(f);
-            }
-        }
-        return filmsRate;
+
+        return filmStorage.getAllFilms().stream()
+                .sorted()
+                .limit(count)
+                .collect(Collectors.toList());
     }
 
 }

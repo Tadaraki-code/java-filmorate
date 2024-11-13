@@ -25,46 +25,50 @@ public class UserController {
 
     @PostMapping
     public User create(@Valid @RequestBody User user) {
-        return userService.getUserStorage().addUser(user);
+        log.info("Создаём пользователя {}", user);
+        return userService.addUser(user);
     }
 
     @PutMapping
     public User update(@Valid @RequestBody User user) {
+        log.info("Обновляем данные пользователя {}", user);
         return userService.getUserStorage().updateUser(user);
     }
 
     @DeleteMapping
     public void delete(@Valid @RequestBody User user) {
+        log.info("Удаляем пользователя {}", user);
         userService.getUserStorage().deleteUser(user);
     }
 
     @GetMapping("/{id}")
     public User getUser(@PathVariable("id") Long id) {
+        log.info("Запрос на получение данных о пользователе c ID {}", id);
         return userService.getUserStorage().getUser(id);
     }
 
     @PutMapping("/{id}/friends/{friendId}")
     public void addFriend(@PathVariable("id") Long id, @PathVariable("friendId") Long friendId) {
-        userService.addFriend(id,friendId);
+        log.info("Запрос от пользователя с ID {}, на добавления в друзья пользователя с ID {}", id, friendId);
+        userService.addFriend(id, friendId);
     }
 
     @DeleteMapping("/{id}/friends/{friendId}")
     public void removeFriend(@PathVariable("id") Long id, @PathVariable("friendId") Long friendId) {
-        userService.deleteFriend(id,friendId);
+        log.info("Запрос от пользователя с ID {}, на удаления из \"друзей\" пользователя с ID {}", id, friendId);
+        userService.deleteFriend(id, friendId);
     }
 
     @GetMapping("/{id}/friends")
     public Set<User> getAllFriends(@PathVariable("id") Long id) {
+        log.info("Вернули список всех друзей пользователя с ID {}", id);
         return userService.getAllFriends(id);
     }
 
     @GetMapping("/{id}/friends/common/{otherId}")
     public Set<User> getAllCommonFriends(@PathVariable("id") Long id, @PathVariable("otherId") Long otherId) {
-        return userService.getAllCommonFriends(id,otherId);
+        log.info("Вернули список общих друзей пользователя с ID {}, c други пользователям с ID {}", id, otherId);
+        return userService.getAllCommonFriends(id, otherId);
     }
 
 }
-//PUT /users/{id}/friends/{friendId} — добавление в друзья.
-//DELETE /users/{id}/friends/{friendId} — удаление из друзей.
-//GET /users/{id}/friends — возвращаем список пользователей, являющихся его друзьями.
-//GET /users/{id}/friends/common/{otherId} — список друзей, общих с другим пользователем.

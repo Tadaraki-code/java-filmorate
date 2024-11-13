@@ -69,14 +69,16 @@ public class InMemoryFilmStorage implements FilmStorage {
         films.remove(film.getId());
     }
 
+    @Override
     public Film getFilm(Long id) {
         if (id == null || id < 0) {
             throw new ValidationException("Id не может быть пустым или быть отрицательным числом");
         }
-        if (films.get(id) == null) {
+        Film film = films.get(id);
+        if (film == null) {
             throw new NotFoundException(new ErrorResponse("Пользователь с ID " + id + " не найден!"));
         }
-        return films.get(id);
+        return film;
     }
 
     private long getNextId() {

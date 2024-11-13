@@ -103,10 +103,11 @@ public class InMemoryUserStorage implements UserStorage {
         if (id == null || id < 0) {
             throw new ValidationException("Id не может быть пустым или быть отрицательным числом");
         }
-        if (users.get(id) == null) {
+        User user = users.get(id);
+        if (user == null) {
             throw new NotFoundException(new ErrorResponse("Фильм с ID " + id + " не найден!"));
         }
-        return users.get(id);
+        return user;
     }
 
     private long getNextId() {

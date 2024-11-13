@@ -22,41 +22,48 @@ public class  FilmController {
     @GetMapping
     public Collection<Film> getAll() {
         log.info("Вернули список всех фильмов");
-        return filmService.getFilmStorage().getAllFilms();
+        return filmService.getAllFilms();
     }
 
     @PostMapping
     public Film create(@Valid @RequestBody Film film) {
-        return filmService.getFilmStorage().addFilm(film);
+        log.info("Создали фильм {}", film);
+        return filmService.addFilm(film);
     }
 
     @PutMapping
     public Film update(@Valid @RequestBody Film film) {
-        return filmService.getFilmStorage().updateFilm(film);
+        log.info("Изменили фильм {}", film);
+        return filmService.updateFilm(film);
     }
 
     @DeleteMapping
     public void deleteFilm(@Valid @RequestBody Film film) {
-        filmService.getFilmStorage().deleteFilm(film);
+        log.info("Запрос на удаление фильма {}", film);
+        filmService.deleteFilm(film);
     }
 
     @GetMapping("/{id}")
     public Film getFilm(@PathVariable("id") Long id) {
-        return filmService.getFilmStorage().getFilm(id);
+        log.info("Запрос на получение фильма по ID {}", id);
+        return filmService.getFilm(id);
     }
 
     @PutMapping("/{filmId}/like/{userId}")
     public void addLike(@PathVariable("filmId") Long filmId, @PathVariable("userId") Long userId) {
+        log.info("Добавление лайка к фильму c ID {},от пользователя с ID {}", filmId, userId);
         filmService.addLike(userId, filmId);
     }
 
     @DeleteMapping("/{filmId}/like/{userId}")
     public void removeLike(@PathVariable("filmId") Long filmId, @PathVariable("userId") Long userId) {
+        log.info("Удаление лайка фильму c ID {},от пользователя с ID {}", filmId, userId);
         filmService.removeLike(userId, filmId);
     }
 
     @GetMapping("/popular")
     public List<Film> getPopularFilms(@RequestParam(defaultValue = "10") int count) {
+        log.info("Возвращаем список фильмов отсортированых по популярности");
         return filmService.getFilmsWithBiggestUsersLikes(count);
     }
 }
