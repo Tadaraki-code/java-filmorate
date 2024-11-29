@@ -229,9 +229,8 @@ public class FilmDbStorage implements FilmStorage {
         LocalDate releaseDate = rs.getDate("release_date").toLocalDate();
         Long duration = rs.getLong("duration");
         String sql = "SELECT code FROM rates WHERE id = ?";
-        Long rate_id = rs.getLong("rate_id");
-        MpaRating mpa = new MpaRating(rate_id, jdbcTemplate.queryForObject(sql, String.class, rate_id));
-
+        Long rateId = rs.getLong("rate_id");
+        MpaRating mpa = new MpaRating(rateId, jdbcTemplate.queryForObject(sql, String.class, rateId));
         Film film = new Film(id, name, description, releaseDate, duration, mpa);
 
         Set<Genre> genres = getGenresByFilmId(id);
