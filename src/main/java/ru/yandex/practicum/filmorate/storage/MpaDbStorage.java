@@ -20,15 +20,17 @@ public class MpaDbStorage {
 
     public Collection<MpaRating> getAllMpa() {
         String sql = "SELECT * FROM rates ORDER BY id;";
+        log.info("Выполнили запрос на получение всех рейтингов");
         return jdbcTemplate.query(sql, this::mapRowToMpa);
     }
 
     public MpaRating getCode(Long id) {
         String checkRateSql = "SELECT COUNT(*) FROM rates WHERE id = ?";
-        Integer count = jdbcTemplate.queryForObject(checkRateSql, Integer.class, id);
+        int count = jdbcTemplate.queryForObject(checkRateSql, Integer.class, id);
         System.out.println(count);
         if (count == 0) {
-            throw new NotFoundException("Рейтинг с таким Id не обнаружен!");
+            log.info("В запрос на получение рейтинга по id, был передан не коректный id");
+            throw new NotFoundException("Рейтинг с таким Id не обнаружен!", id);
         }
         String sql = "SELECT * FROM rates WHERE id = ?";
         return jdbcTemplate.queryForObject(sql, this::mapRowToMpa, id);

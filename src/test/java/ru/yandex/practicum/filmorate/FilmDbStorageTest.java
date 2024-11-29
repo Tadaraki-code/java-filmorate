@@ -105,7 +105,7 @@ class FilmDbStorageTest {
 
         filmDbStorage.addLike(userId, createdFilm.getId());
 
-        Set<Long> likes = filmDbStorage.getLikesByFilmId(createdFilm.getId());
+        Set<Long> likes = filmDbStorage.getFilm(createdFilm.getId()).getLikes();
         assertThat(likes).contains(userId);
     }
 
@@ -117,7 +117,7 @@ class FilmDbStorageTest {
         filmDbStorage.addLike(userId, createdFilm.getId());
         filmDbStorage.removeLike(userId, createdFilm.getId());
 
-        Set<Long> likes = filmDbStorage.getLikesByFilmId(createdFilm.getId());
+        Set<Long> likes = filmDbStorage.getFilm(createdFilm.getId()).getLikes();
         assertThat(likes).doesNotContain(userId);
     }
 

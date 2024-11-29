@@ -20,17 +20,19 @@ public class GenreDbStorage {
 
     public Collection<Genre> getAllGenres() {
         String sql = "SELECT * FROM genres ORDER BY id";
+        log.info("Выполнили запрос на получение всех жанров");
         return jdbcTemplate.query(sql, this::mapRowToGenres);
     }
 
     public Genre getGenre(@PathVariable("id") Long id) {
         String checkRateSql = "SELECT COUNT(*) FROM genres WHERE id = ?";
-        Integer count = jdbcTemplate.queryForObject(checkRateSql, Integer.class, id);
-        System.out.println(count);
+        int count = jdbcTemplate.queryForObject(checkRateSql, Integer.class, id);
         if (count == 0) {
-            throw new NotFoundException("Жанра с таким Id не обнаружен!");
+            log.info("В запрос на получение жанра по id,был передан не коректный id{}", id);
+            throw new NotFoundException("Жанра с таким Id не обнаружен!", id);
         }
         String sql = "SELECT * FROM genres WHERE id = ?";
+        log.info("Выполнили запрос на получение жанра по Id {}", id);
         return jdbcTemplate.queryForObject(sql, this::mapRowToGenres, id);
     }
 
