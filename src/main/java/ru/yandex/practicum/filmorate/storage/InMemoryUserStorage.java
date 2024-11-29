@@ -1,7 +1,7 @@
 package ru.yandex.practicum.filmorate.storage;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exception.AlreadyExistException;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
@@ -15,11 +15,15 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Slf4j
-@Component
-@RequiredArgsConstructor
+@Component("inMemoryUserStorage")
 public class InMemoryUserStorage implements UserStorage {
+
     private final FilmStorage filmStorage;
     private final Map<Long, User> users = new HashMap<>();
+
+    public InMemoryUserStorage(@Qualifier("inMemoryFilmStorage") InMemoryFilmStorage filmStorage) {
+        this.filmStorage = filmStorage;
+    }
 
     @Override
     public Collection<User> getAllUsers() {
@@ -108,6 +112,20 @@ public class InMemoryUserStorage implements UserStorage {
             throw new NotFoundException(new ErrorResponse("Фильм с ID " + id + " не найден!"));
         }
         return user;
+    }
+
+    public void addFriend(Long userId, Long friendId) {
+        User user = getUser(userId);
+        User friend = getUser(friendId);
+        user.getFriends().add(friendId);
+        friend.getFriends().add(userId);
+    }
+
+    public void deleteFriend(Long userId, Long friendId) {
+        User user = getUser(userId);
+        User friend = getUser(friendId);
+        user.getFriends().remove(friendId);
+        friend.getFriends().remove(userId);
     }
 
     private long getNextId() {

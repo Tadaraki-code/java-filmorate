@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import ru.yandex.practicum.filmorate.exception.AlreadyExistException;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
-import ru.yandex.practicum.filmorate.model.DataModel;
+import ru.yandex.practicum.filmorate.model.ErrorResponse;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -40,9 +40,12 @@ public class ErrorHandler {
     }
 
     @ExceptionHandler(NotFoundException.class)
-    public ResponseEntity<DataModel> handlerNotFoundException(NotFoundException e) {
+    public ResponseEntity<ErrorResponse> handlerNotFoundException(NotFoundException e) {
         log.info("Запрашиваемый объект не был найден: {}", e.getMessage());
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getModel());
+        if (e.getErrorResponse().getErrorId() != 0) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getErrorResponse());
+        }
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getErrorResponse());
     }
 
     @ExceptionHandler(AlreadyExistException.class)

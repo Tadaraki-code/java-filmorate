@@ -1,6 +1,7 @@
 package ru.yandex.practicum.filmorate.storage;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exception.AlreadyExistException;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
@@ -13,9 +14,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Slf4j
-@Component
+@Component("inMemoryFilmStorage")
 public class InMemoryFilmStorage implements FilmStorage {
     private final Map<Long, Film> films = new HashMap<>();
+    private final UserStorage userStorage;
+
+    public InMemoryFilmStorage(@Qualifier("userDbStorage") UserStorage userStorage) {
+        this.userStorage = userStorage;
+    }
 
     @Override
     public Collection<Film> getAllFilms() {
@@ -79,6 +85,27 @@ public class InMemoryFilmStorage implements FilmStorage {
             throw new NotFoundException(new ErrorResponse("Пользователь с ID " + id + " не найден!"));
         }
         return film;
+    }
+
+    public void addLike(Long userId, Long filmId) {
+        Film film = getFilm(filmId);
+        userStorage.getUser(userId);
+
+        if (!film.getLikes().contains(userId)) {
+            film.getLikes().add(userId);
+        } else {
+            throw new AlreadyExistException("Пользователь уже поставил лайк этому фильму.");
+        }
+    }
+
+    public void removeLike(Long userId, Long filmId) {
+        Film film = getFilm(filmId);
+        userStorage.getUser(userId);
+        if (film.getLikes().contains(userId)) {
+            film.getLikes().remove(userId);
+        } else {
+            throw new NotFoundException("Лайк пользователя для данного фильма не найден.");
+        }
     }
 
     private long getNextId() {

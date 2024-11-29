@@ -27,7 +27,7 @@ public class FilmValidationTest {
     @Test
     public void shouldNotViolateValidationConstraints() {
         Film film = new Film(1L, "Тест", "Тестовое описание",
-                LocalDate.of(2010, 7, 16), 148L);
+                LocalDate.of(2010, 7, 16), 148L, null);
 
         Set<ConstraintViolation<Film>> violations = validator.validate(film);
 
@@ -37,7 +37,7 @@ public class FilmValidationTest {
     @Test
     public void shouldFailWhenNameIsEmpty() {
         Film film = new Film(1L, "", "A mind-bending thriller",
-                LocalDate.of(2010, 7, 16), 148L);
+                LocalDate.of(2010, 7, 16), 148L, null);
 
         Set<ConstraintViolation<Film>> violations = validator.validate(film);
 
@@ -49,7 +49,7 @@ public class FilmValidationTest {
     public void shouldFailWhenDescriptionIsTooLong() {
         String longDescription = "A".repeat(201); // 201 символ
         Film film = new Film(1L, "Тест", longDescription,
-                LocalDate.of(2010, 7, 16), 148L);
+                LocalDate.of(2010, 7, 16), 148L, null);
 
         Set<ConstraintViolation<Film>> violations = validator.validate(film);
 
@@ -61,7 +61,7 @@ public class FilmValidationTest {
     @Test
     public void shouldFailWhenReleaseDateIsBeforeMinimumDate() {
         Film film = new Film(1L, "Тест", "Тестовое описание",
-                LocalDate.of(1895, 12, 27), 120L);
+                LocalDate.of(1895, 12, 27), 120L, null);
 
         Set<ConstraintViolation<Film>> violations = validator.validate(film);
 
@@ -73,7 +73,7 @@ public class FilmValidationTest {
     @Test
     public void shouldFailWhenDurationIsNegative() {
         Film film = new Film(1L, "Тест", "Тестовое описание",
-                LocalDate.of(2010, 7, 16), -148L);
+                LocalDate.of(2010, 7, 16), -148L, null);
 
         Set<ConstraintViolation<Film>> violations = validator.validate(film);
 
@@ -85,7 +85,7 @@ public class FilmValidationTest {
     @Test
     public void shouldFailWhenReleaseDateIsNull() {
         Film film = new Film(1L, "Тест", "Тестовое описание", null,
-                148L);
+                148L, null);
 
         Set<ConstraintViolation<Film>> violations = validator.validate(film);
 

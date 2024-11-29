@@ -1,14 +1,12 @@
 package ru.yandex.practicum.filmorate.service;
 
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
-import ru.yandex.practicum.filmorate.exception.AlreadyExistException;
-import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
-import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 import java.util.Collection;
 import java.util.List;
@@ -16,10 +14,11 @@ import java.util.stream.Collectors;
 
 @Service
 @Getter
-@RequiredArgsConstructor
 public class FilmService {
-    private final FilmStorage filmStorage;
-    private final UserStorage userStorage;
+
+    @Autowired
+    @Qualifier("filmDbStorage")
+    private FilmStorage filmStorage;
 
     public Collection<Film> getAllFilms() {
         return filmStorage.getAllFilms();
@@ -42,24 +41,11 @@ public class FilmService {
     }
 
     public void addLike(Long userId, Long filmId) {
-        Film film = filmStorage.getFilm(filmId);
-        userStorage.getUser(userId);
-
-        if (!film.getLikes().contains(userId)) {
-            film.getLikes().add(userId);
-        } else {
-            throw new AlreadyExistException("Пользователь уже поставил лайк этому фильму.");
-        }
+        filmStorage.addLike(userId, filmId);
     }
 
     public void removeLike(Long userId, Long filmId) {
-        Film film = filmStorage.getFilm(filmId);
-        userStorage.getUser(userId);
-        if (film.getLikes().contains(userId)) {
-            film.getLikes().remove(userId);
-        } else {
-            throw new NotFoundException("Лайк пользователя для данного фильма не найден.");
-        }
+        filmStorage.removeLike(userId, filmId);
     }
 
     public List<Film> getFilmsWithBiggestUsersLikes(int count) {

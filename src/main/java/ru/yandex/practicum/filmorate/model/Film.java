@@ -7,6 +7,7 @@ import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import ru.yandex.practicum.filmorate.validation.LocalDateValidator;
 
 import java.time.LocalDate;
@@ -15,6 +16,7 @@ import java.util.Set;
 
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class Film implements DataModel,Comparable<Film> {
     private Long id;
     @NotEmpty(message = "Название фильма не может быть пустым!")
@@ -29,6 +31,8 @@ public class Film implements DataModel,Comparable<Film> {
     @Positive(message = "Продолжительность фильма не может быть отрицательным числом!")
     private Long duration;
     private final Set<Long> likes = new HashSet<>();
+    private MpaRating mpa;
+    private final Set<Genre> genres = new HashSet<>();
 
     @Override
     public int compareTo(Film o) {
